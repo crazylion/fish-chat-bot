@@ -8,6 +8,7 @@ def client
   }
 end
 
+
 post '/callback' do
   body = request.body.read
 
@@ -23,15 +24,23 @@ post '/callback' do
     when Line::Bot::Event::Message
       case event.type
       when Line::Bot::Event::MessageType::Text
+      p event
         message = {
           type: 'text',
           #text: event.message['text']
           text:  "發大財"
         }
+        message[:text] = "天下蒼生"  if event.message["text"] == "總統"
+        p message
         client.reply_message(event['replyToken'], message)
       end
     end
   }
 
   "OK"
+end
+
+post '/message' do
+  user_id =params[:user_id]
+  client.push_message(user_id,{type: "text",text: "問候"})
 end
